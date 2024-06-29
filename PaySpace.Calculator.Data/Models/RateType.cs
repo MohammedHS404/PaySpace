@@ -1,8 +1,7 @@
-﻿namespace PaySpace.Calculator.Data.Models
+﻿namespace PaySpace.Calculator.Data.Models;
+
+public enum RateType
 {
-    public enum RateType
-    {
-        Percentage,
-        Amount
-    }
+    Percentage,
+    Amount
 }

@@ -1,66 +1,69 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
 using PaySpace.Calculator.Web.Models;
 using PaySpace.Calculator.Web.Services.Abstractions;
 using PaySpace.Calculator.Web.Services.Models;
 
-namespace PaySpace.Calculator.Web.Controllers
+namespace PaySpace.Calculator.Web.Controllers;
+
+public class CalculatorController : Controller
 {
-    public class CalculatorController(ICalculatorHttpService calculatorHttpService) : Controller
+    private readonly ICalculatorHttpService _calculatorHttpService;
+    public CalculatorController(ICalculatorHttpService calculatorHttpService)
     {
-        public IActionResult Index()
-        {
-            var vm = this.GetCalculatorViewModelAsync();
+        _calculatorHttpService = calculatorHttpService;
+    }
+    public IActionResult Index()
+    {
+        var vm = GetCalculatorViewModelAsync();
 
-            return this.View(vm);
-        }
+        return View(vm);
+    }
 
-        public async Task<IActionResult> History()
+    public async Task<IActionResult> History()
+    {
+        return View(new CalculatorHistoryViewModel
         {
-            return this.View(new CalculatorHistoryViewModel
+            CalculatorHistory = await _calculatorHttpService.GetHistoryAsync()
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken()]
+    public async Task<IActionResult> Index(CalculateRequestViewModel request)
+    {
+        if (ModelState.IsValid)
+        {
+            try
             {
-                CalculatorHistory = await calculatorHttpService.GetHistoryAsync()
-            });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken()]
-        public async Task<IActionResult> Index(CalculateRequestViewModel request)
-        {
-            if (this.ModelState.IsValid)
-            {
-                try
+                await _calculatorHttpService.CalculateTaxAsync(new()
                 {
-                    await calculatorHttpService.CalculateTaxAsync(new CalculateRequest
-                    {
-                        PostalCode = request.PostalCode,
-                        Income = request.Income
-                    });
+                    PostalCode = request.PostalCode,
+                    Income = request.Income
+                });
 
-                    return this.RedirectToAction(nameof(this.History));
-                }
-                catch (Exception e)
-                {
-                    this.ModelState.AddModelError(string.Empty, e.Message);
-                }
+                return RedirectToAction(nameof(History));
             }
-
-            var vm = await this.GetCalculatorViewModelAsync(request);
-
-            return this.View(vm);
-        }
-
-        private async Task<CalculatorViewModel> GetCalculatorViewModelAsync(CalculateRequestViewModel? request = null)
-        {
-            var postalCodes = await calculatorHttpService.GetPostalCodesAsync();
-
-            return new CalculatorViewModel
+            catch (Exception e)
             {
-                PostalCodes = postalCodes,
-                Income = request.Income,
-                PostalCode = request.PostalCode ?? string.Empty
-            };
+                ModelState.AddModelError(string.Empty, e.Message);
+            }
         }
+
+        CalculatorViewModel? vm = await GetCalculatorViewModelAsync(request);
+
+        return View(vm);
+    }
+
+    private async Task<CalculatorViewModel> GetCalculatorViewModelAsync(CalculateRequestViewModel? request = null)
+    {
+        var postalCodes = await _calculatorHttpService.GetPostalCodesAsync();
+
+        return new()
+        {
+            PostalCodes = new SelectList(postalCodes),
+            Income = request.Income,
+            PostalCode = request.PostalCode ?? string.Empty
+        };
     }
 }

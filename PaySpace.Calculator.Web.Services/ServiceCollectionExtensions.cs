@@ -2,13 +2,12 @@
 
 using PaySpace.Calculator.Web.Services.Abstractions;
 
-namespace PaySpace.Calculator.Web.Services
+namespace PaySpace.Calculator.Web.Services;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static void AddCalculatorHttpServices(this IServiceCollection services)
     {
-        public static void AddCalculatorHttpServices(this IServiceCollection services)
-        {
-            services.AddScoped<ICalculatorHttpService, CalculatorHttpService>();
-        }
+        services.AddScoped<ICalculatorHttpService, CalculatorHttpService>();
     }
 }

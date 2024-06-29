@@ -1,9 +1,8 @@
-﻿namespace PaySpace.Calculator.Data.Models
+﻿namespace PaySpace.Calculator.Data.Models;
+
+public enum CalculatorType
 {
-    public enum CalculatorType
-    {
-        Progressive,
-        FlatValue,
-        FlatRate
-    }
+    Progressive,
+    FlatValue,
+    FlatRate
 }

@@ -1,11 +1,10 @@
 ﻿using PaySpace.Calculator.Data.Models;
 
-namespace PaySpace.Calculator.Services.Abstractions
-{
-    public interface IPostalCodeService
-    {
-        Task<List<PostalCode>> GetPostalCodesAsync();
+namespace PaySpace.Calculator.Services.Abstractions;
 
-        Task<CalculatorType?> CalculatorTypeAsync(string code);
-    }
+public interface IPostalCodeService
+{
+    Task<List<PostalCode>> GetPostalCodesAsync();
+
+    Task<CalculatorType?> CalculatorTypeAsync(string code,CancellationToken cancellationToken);
 }

@@ -1,13 +1,42 @@
-﻿using PaySpace.Calculator.Services.Abstractions;
-using PaySpace.Calculator.Services.Models;
+using PaySpace.Calculator.Data.Models;
+using PaySpace.Calculator.Services.Abstractions.Calculators;
 
-namespace PaySpace.Calculator.Services.Calculators
+namespace PaySpace.Calculator.Services.Calculators;
+
+public class ProgressiveCalculator : IProgressiveCalculator
 {
-    internal sealed class ProgressiveCalculator : IProgressiveCalculator
+    public decimal Calculate(decimal income, List<CalculatorSetting> settings)
     {
-        public Task<CalculateResult> CalculateAsync(decimal income)
+        decimal tax = 0;
+
+        foreach (CalculatorSetting setting in settings)
         {
-            throw new NotImplementedException();
+            if (setting.From > income)
+            {
+                continue;
+            }
+
+            decimal amount = 0;
+            
+            if (setting.To.HasValue && setting.To.Value < income)
+            {
+                amount = setting.To.Value - setting.From;
+            }
+            else
+            {
+                amount = income - setting.From;
+            }
+
+            if (setting.RateType == RateType.Percentage)
+            {
+                tax += setting.Rate / 100 * amount;
+            }
+            else
+            {
+                tax += setting.Rate;
+            }
         }
+
+        return tax;
     }
 }

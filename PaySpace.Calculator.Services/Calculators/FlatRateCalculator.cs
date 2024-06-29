@@ -1,13 +1,20 @@
-﻿using PaySpace.Calculator.Services.Abstractions;
-using PaySpace.Calculator.Services.Models;
+using PaySpace.Calculator.Data.Models;
+using PaySpace.Calculator.Services.Abstractions.Calculators;
+using PaySpace.Calculator.Services.Exceptions;
 
-namespace PaySpace.Calculator.Services.Calculators
+namespace PaySpace.Calculator.Services.Calculators;
+
+public class FlatRateCalculator : IFlatRateCalculator
 {
-    internal sealed class FlatRateCalculator : IFlatRateCalculator
+    public decimal Calculate(decimal income, List<CalculatorSetting> settings)
     {
-        public Task<CalculateResult> CalculateAsync(decimal income)
+        CalculatorSetting setting = settings.Single();
+
+        if (setting.RateType != RateType.Percentage)
         {
-            throw new NotImplementedException();
+            throw new DomainException("Rate type should be percentage");
         }
+
+        return setting.Rate / 100 * income;
     }
 }

@@ -15,5 +15,11 @@
     <ItemGroup>
       <ProjectReference Include="..\PaySpace.Calculator.Data\PaySpace.Calculator.Data.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="PaySpace.Calculator.Services.Tests">
+            <Assembly>PaySpace.Calculator.Services.Tests</Assembly>
+        </InternalsVisibleTo>
+    </ItemGroup>
 
 </Project>
