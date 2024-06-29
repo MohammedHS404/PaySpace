@@ -27,7 +27,7 @@ You have been briefed to complete a tax calculator for an individual. The applic
 
 | Postal Code | Tax Calculation Type |
 |-------------|----------------------|
-| 7441        | Progressive          |
+| <br/>        | Progressive          |
 | A100        | Flat Value           |
 | 7000        | Flat rate            |
 | 1000        | Progressive          |

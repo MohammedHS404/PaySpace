@@ -1,11 +1,12 @@
-﻿using PaySpace.Calculator.Data.Models;
+﻿using PaySpace.Calculator.Data.Dtos;
+using PaySpace.Calculator.Data.Models;
 
 namespace PaySpace.Calculator.Services.Abstractions;
 
 public interface IHistoryService
 {
-    Task<List<CalculatorHistory>> GetHistoryAsync();
+    Task AddAndSaveAsync(CalculatorHistory history, CancellationToken cancellationToken);
 
-    Task AddAndSaveAsync(CalculatorHistory calculatorHistory, CancellationToken cancellationToken);
+    Task<List<CalculatorHistory>> GetHistoryAsync(PaginationDto pagination, CancellationToken cancellationToken);
 
 }

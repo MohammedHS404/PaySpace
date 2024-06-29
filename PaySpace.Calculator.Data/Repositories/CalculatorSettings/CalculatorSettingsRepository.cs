@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PaySpace.Calculator.Data.Abstractions;
 using PaySpace.Calculator.Data.Models;
 
-namespace PaySpace.Calculator.Data.Repositories;
+namespace PaySpace.Calculator.Data.Repositories.CalculatorSettings;
 
 internal sealed class CalculatorSettingsRepository : ICalculatorSettingsRepository
 {

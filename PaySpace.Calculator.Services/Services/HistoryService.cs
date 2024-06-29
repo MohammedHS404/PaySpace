@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PaySpace.Calculator.Data;
+using PaySpace.Calculator.Data.Abstractions;
+using PaySpace.Calculator.Data.Dtos;
 using PaySpace.Calculator.Data.Models;
 using PaySpace.Calculator.Services.Abstractions;
 
@@ -7,21 +9,19 @@ namespace PaySpace.Calculator.Services.Services;
 
 internal sealed class HistoryService : IHistoryService
 {
-    private readonly CalculatorContext _context;
-    public HistoryService(CalculatorContext context)
+    private readonly IHistoryRepository _historyRepository;
+    public HistoryService(IHistoryRepository historyRepository)
     {
-        _context = context;
+        _historyRepository = historyRepository;
     }
     public Task AddAndSaveAsync(CalculatorHistory history, CancellationToken cancellationToken)
     {
-        _context.Add(history);
-        return _context.SaveChangesAsync(cancellationToken);
+        _historyRepository.Add(history);
+        return _historyRepository.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<List<CalculatorHistory>> GetHistoryAsync()
+    public Task<List<CalculatorHistory>> GetHistoryAsync(PaginationDto pagination, CancellationToken cancellationToken)
     {
-        return _context.Set<CalculatorHistory>()
-            .OrderByDescending(_ => _.Timestamp)
-            .ToListAsync();
+        return _historyRepository.GetHistoriesAsync(pagination, cancellationToken);
     }
 }

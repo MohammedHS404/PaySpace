@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using PaySpace.Calculator.Data.Abstractions;
 using PaySpace.Calculator.Data.Cache;
 using PaySpace.Calculator.Data.Repositories;
+using PaySpace.Calculator.Data.Repositories.CalculatorSettings;
+using PaySpace.Calculator.Data.Repositories.History;
 
 namespace PaySpace.Calculator.Data.Configuration;
 
@@ -27,6 +29,8 @@ public static class ServiceCollectionExtensions
                 opt.GetRequiredService<ICacheService>(),
                 opt.GetRequiredService<ICacheKeyBuilder>()
             ));
+
+        services.AddScoped<IHistoryRepository, HistoryRepository>();
     }
 
     public static void InitializeDatabase(this IApplicationBuilder app)

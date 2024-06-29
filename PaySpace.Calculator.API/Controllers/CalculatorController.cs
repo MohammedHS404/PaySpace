@@ -66,9 +66,11 @@ public sealed class CalculatorController : ControllerBase
     }
 
     [HttpGet("history")]
-    public async Task<ActionResult<List<CalculatorHistory>>> History()
+    public async Task<ActionResult<List<CalculatorHistory>>> History([FromQuery] PaginationRequest? request, CancellationToken cancellationToken)
     {
-        var history = await _historyService.GetHistoryAsync();
+        request ??= new PaginationRequest();
+        
+        List<CalculatorHistory> history = await _historyService.GetHistoryAsync(request.ToPaginationDto(), cancellationToken);
 
         return Ok(_mapper.Map<List<CalculatorHistoryDto>>(history));
     }

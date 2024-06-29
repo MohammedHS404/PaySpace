@@ -9,6 +9,11 @@ public class CalculatorContext : DbContext
     public CalculatorContext(DbContextOptions<CalculatorContext> options) : base(options)
     {
     }
+    
+    public DbSet<PostalCode> PostalCodes { get; set; }
+    public DbSet<CalculatorSetting> CalculatorSettings { get; set; }
+    public DbSet<CalculatorHistory> CalculatorHistories { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PostalCode>()
@@ -16,6 +21,8 @@ public class CalculatorContext : DbContext
 
         modelBuilder.Entity<CalculatorSetting>()
             .HasData(GetCalculatorSettings());
+
+        base.OnModelCreating(modelBuilder);
     }
 
     private static IEnumerable<PostalCode> GetPostalCodes()
