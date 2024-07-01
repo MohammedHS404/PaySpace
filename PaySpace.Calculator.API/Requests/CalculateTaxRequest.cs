@@ -2,17 +2,17 @@
 
 namespace PaySpace.Calculator.API.Requests;
 
-public sealed record CalculateRequest
+public sealed record CalculateTaxRequest
 {
     [Required]
     [MinLength(1)]
     public string PostalCode { get; }
 
     [Required]
-    [Range(0, double.MaxValue)]
+    [Range(0.001, double.MaxValue, ErrorMessage = "Income must be greater than 0")]
     public decimal Income { get; }
         
-    public CalculateRequest(string postalCode, decimal income)
+    public CalculateTaxRequest(string postalCode, decimal income)
     {
         PostalCode = postalCode;
         Income = income;

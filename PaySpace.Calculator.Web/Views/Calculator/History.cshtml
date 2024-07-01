@@ -1,5 +1,6 @@
-@using PaySpace.Calculator.Web.Services.Models
-@model PaySpace.Calculator.Web.Models.CalculatorHistoryViewModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using PaySpace.Calculator.Web.Services.Dtos
+@model PaySpace.Calculator.Web.ViewModels.CalculatorHistoryViewModel
 
 @{
     ViewBag.Title = "Calculator History";
@@ -19,7 +20,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (CalculatorHistory? history in Model.CalculatorHistory)
+    @foreach (CalculatorHistoryDto? history in Model.CalculatorHistory)
     {
         <tr>
             <th scope="row">@history.Timestamp</th>

@@ -7,7 +7,8 @@ public sealed class CalculatorHistory
     [Key]
     public long Id { get; set; }
 
-    public string PostalCode { get; set; }
+    [MaxLength(50)]
+    public required string PostalCode { get; set; }
 
     public DateTime Timestamp { get; set; }
 

@@ -1,19 +1,19 @@
-using PaySpace.Calculator.Business.Models;
+using PaySpace.Calculator.Business.Dtos;
 
 namespace PaySpace.Calculator.API.Responses;
 
-public class CalculateResultResponse
+public record CalculateResultResponse
 {
-    public string Calculator { get; set; }
-    
-    public decimal Tax { get; set; }
-    
+    public string Calculator { get; init; }
+
+    public decimal Tax { get; init; }
+
     public CalculateResultResponse(string calculator, decimal tax)
     {
         Calculator = calculator;
         Tax = tax;
     }
-    
+
     public CalculateResultResponse(CalculateTaxResultDto result)
     {
         Calculator = result.Calculator.ToString();

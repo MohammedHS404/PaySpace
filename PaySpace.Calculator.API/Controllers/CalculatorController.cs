@@ -3,8 +3,8 @@ using PaySpace.Calculator.API.Requests;
 using PaySpace.Calculator.API.Responses;
 using PaySpace.Calculator.Data.Models;
 using PaySpace.Calculator.Business.Abstractions;
+using PaySpace.Calculator.Business.Dtos;
 using PaySpace.Calculator.Business.Exceptions;
-using PaySpace.Calculator.Business.Models;
 
 namespace PaySpace.Calculator.API.Controllers;
 
@@ -30,14 +30,14 @@ public sealed class CalculatorController : ControllerBase
     }
 
     [HttpPost("calculate-tax")]
-    public async Task<ActionResult<CalculateTaxResultDto>> CalculateAsync([FromBody] CalculateRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<CalculateTaxResultDto>> CalculateAsync([FromBody] CalculateTaxRequest taxRequest, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        CalculatorType? calculatorType = await _postalCodeService.GetCalculatorTypeByPostalCodeAsync(request.PostalCode, cancellationToken);
+        CalculatorType? calculatorType = await _postalCodeService.GetCalculatorTypeByPostalCodeAsync(taxRequest.PostalCode, cancellationToken);
 
         if (calculatorType == null)
         {
@@ -46,7 +46,7 @@ public sealed class CalculatorController : ControllerBase
 
         try
         {
-            CalculateTaxDto calculateTaxDto = new(request.PostalCode, calculatorType.Value, request.Income);
+            CalculateTaxDto calculateTaxDto = new(taxRequest.PostalCode, calculatorType.Value, taxRequest.Income);
 
             CalculateTaxResultDto taxResult = await _taxCalculationService.CalculateTaxAsync(
                 calculateTaxDto,
@@ -66,11 +66,11 @@ public sealed class CalculatorController : ControllerBase
     public async Task<ActionResult<List<CalculatorHistory>>> History([FromQuery] PaginationRequest? request, CancellationToken cancellationToken)
     {
         request ??= new PaginationRequest();
-        
+
         List<CalculatorHistory> history = await _historyService.GetHistoryAsync(request.ToPaginationDto(), cancellationToken);
 
         List<CalculatorHistoryResponse> historyDtos = history.Select(CalculatorHistoryResponse.FromEntity).ToList();
-        
+
         return Ok(historyDtos);
     }
 }

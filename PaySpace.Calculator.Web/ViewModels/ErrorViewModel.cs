@@ -1,4 +1,4 @@
-namespace PaySpace.Calculator.Web.Models;
+namespace PaySpace.Calculator.Web.ViewModels;
 
 public sealed class ErrorViewModel
 {

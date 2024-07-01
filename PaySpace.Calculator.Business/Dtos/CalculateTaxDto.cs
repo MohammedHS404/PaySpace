@@ -1,6 +1,6 @@
 using PaySpace.Calculator.Data.Models;
 
-namespace PaySpace.Calculator.Business.Models;
+namespace PaySpace.Calculator.Business.Dtos;
 
 public record CalculateTaxDto
 {

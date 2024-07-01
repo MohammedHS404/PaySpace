@@ -1,4 +1,4 @@
-namespace PaySpace.Calculator.Web.Services.Models;
+namespace PaySpace.Calculator.Web.Services.Dtos;
 
 public class PaginationDto
 {

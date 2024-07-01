@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
-using PaySpace.Calculator.Web.Models;
 using PaySpace.Calculator.Web.Services.Abstractions;
-using PaySpace.Calculator.Web.Services.Models;
+using PaySpace.Calculator.Web.Services.Dtos;
+using PaySpace.Calculator.Web.ViewModels;
 
 namespace PaySpace.Calculator.Web.Controllers;
 
 public class CalculatorController : Controller
 {
-    private readonly ICalculatorHttpService _calculatorHttpService;
-    public CalculatorController(ICalculatorHttpService calculatorHttpService)
+    private readonly ICalculatorIntegrationService _calculatorIntegrationService;
+    public CalculatorController(ICalculatorIntegrationService calculatorIntegrationService)
     {
-        _calculatorHttpService = calculatorHttpService;
+        _calculatorIntegrationService = calculatorIntegrationService;
     }
 
     public IActionResult Index()
@@ -20,13 +20,13 @@ public class CalculatorController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken()]
-    public async Task<IActionResult> Index(CalculateRequestViewModel request)
+    public async Task<IActionResult> Index(CalculatorViewModel request)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                await _calculatorHttpService.CalculateTaxAsync(new()
+                await _calculatorIntegrationService.CalculateTaxAsync(new()
                 {
                     PostalCode = request.PostalCode,
                     Income = request.Income
@@ -47,7 +47,7 @@ public class CalculatorController : Controller
         [FromQuery] PaginationDto pagination,
         CancellationToken cancellationToken = default)
     {
-        List<CalculatorHistory> calculatorHistories = await _calculatorHttpService.GetHistoryAsync(new PaginationDto()
+        List<CalculatorHistoryDto> calculatorHistories = await _calculatorIntegrationService.GetHistoryAsync(new PaginationDto()
         {
             PageNumber = pagination.PageNumber,
             PageSize = pagination.PageSize

@@ -2,22 +2,22 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using PaySpace.Calculator.Web.Services.Abstractions;
-using PaySpace.Calculator.Web.Services.Models;
+using PaySpace.Calculator.Web.Services.Dtos;
 
-namespace PaySpace.Calculator.Web.Services;
+namespace PaySpace.Calculator.Web.Services.Services;
 
-public class CalculatorHttpService : ICalculatorHttpService
+public class CalculatorIntegrationService : ICalculatorIntegrationService
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<CalculatorHttpService> _logger;
-    public CalculatorHttpService(HttpClient httpClient, CalculatorSettingsOptionsDto options, ILogger<CalculatorHttpService> logger)
+    private readonly ILogger<CalculatorIntegrationService> _logger;
+    public CalculatorIntegrationService(HttpClient httpClient, CalculatorSettingsOptionsDto options, ILogger<CalculatorIntegrationService> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
         _httpClient.BaseAddress = new Uri($"{options.ApiUrl}/api/");
     }
 
-    public async Task<List<CalculatorHistory>> GetHistoryAsync(PaginationDto pagination, CancellationToken cancellationToken)
+    public async Task<List<CalculatorHistoryDto>> GetHistoryAsync(PaginationDto pagination, CancellationToken cancellationToken)
     {
         string url = "calculator/history";
         url += $"?";
@@ -29,32 +29,42 @@ public class CalculatorHttpService : ICalculatorHttpService
 
         if (response.Result.IsSuccessStatusCode)
         {
-            List<CalculatorHistory>? result = await response.Result.Content.ReadFromJsonAsync<List<CalculatorHistory>>(cancellationToken: cancellationToken);
+            List<CalculatorHistoryDto>? result = await response.Result.Content.ReadFromJsonAsync<List<CalculatorHistoryDto>>(cancellationToken: cancellationToken);
 
             if (result != null)
             {
                 return result;
             }
-            else
-            {
-                throw new Exception("Couldn't parse the response");
-            }
-
+            
+            _logger.LogError("Failed to parse the response");
+            
+            throw new Exception("Failed to process the histories request");
         }
-        else
+        
+        string? message = await response.Result.Content.ReadAsStringAsync(cancellationToken);
+        
+        if (response.Result.StatusCode == HttpStatusCode.BadRequest)
         {
-            throw new Exception(response.Result.ReasonPhrase);
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                throw new Exception(message);
+            }
         }
+        
+        _logger.LogError(response.Result.ReasonPhrase);
+        _logger.LogError(response.Result.StatusCode.ToString());
+        
+        throw new Exception("There was an issue processing histories request");
     }
-    public async Task<CalculateResult> CalculateTaxAsync(CalculateRequest calculationRequest)
+    public async Task<CalculateTaxResultDto> CalculateTaxAsync(CalculateTaxRequestDto calculationTaxRequestDto)
     {
         try
         {
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("calculator/calculate-tax", calculationRequest);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("calculator/calculate-tax", calculationTaxRequestDto);
 
             if (response.IsSuccessStatusCode)
             {
-                CalculateResult? result = await response.Content.ReadFromJsonAsync<CalculateResult>();
+                CalculateTaxResultDto? result = await response.Content.ReadFromJsonAsync<CalculateTaxResultDto>();
 
                 if (result != null)
                 {

@@ -6,13 +6,13 @@ namespace PaySpace.Calculator.Data;
 
 public class CalculatorContext : DbContext
 {
-    public CalculatorContext(DbContextOptions<CalculatorContext> options) : base(options)
-    {
-    }
-    
     public DbSet<PostalCode> PostalCodes { get; set; }
     public DbSet<CalculatorSetting> CalculatorSettings { get; set; }
     public DbSet<CalculatorHistory> CalculatorHistories { get; set; }
+    
+    public CalculatorContext(DbContextOptions<CalculatorContext> options) : base(options)
+    {
+    }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

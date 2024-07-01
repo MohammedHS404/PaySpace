@@ -1,6 +1,4 @@
-using PaySpace.Calculator.Web.Services.Models;
-
-namespace PaySpace.Calculator.Web.Models;
+namespace PaySpace.Calculator.Web.ViewModels;
 
 public record PaginationViewModel
 {

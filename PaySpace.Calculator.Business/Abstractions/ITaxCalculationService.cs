@@ -1,4 +1,4 @@
-using PaySpace.Calculator.Business.Models;
+using PaySpace.Calculator.Business.Dtos;
 
 namespace PaySpace.Calculator.Business.Abstractions;
 

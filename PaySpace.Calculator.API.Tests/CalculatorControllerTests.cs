@@ -4,8 +4,8 @@ using Moq;
 using PaySpace.Calculator.API.Controllers;
 using PaySpace.Calculator.API.Requests;
 using PaySpace.Calculator.Business.Abstractions;
+using PaySpace.Calculator.Business.Dtos;
 using PaySpace.Calculator.Business.Exceptions;
-using PaySpace.Calculator.Business.Models;
 using PaySpace.Calculator.Data.Models;
 
 namespace PaySpace.Calculator.API.Tests;
@@ -20,10 +20,10 @@ public class CalculatorControllerTests
 
         controller.ModelState.AddModelError("Income", "Income is required");
 
-        CalculateRequest request = new("1234", -1);
+        CalculateTaxRequest taxRequest = new("1234", -1);
 
         // Act
-        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(taxRequest, CancellationToken.None);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -36,16 +36,16 @@ public class CalculatorControllerTests
 
         CalculatorType? calculatorType = null;
 
-        CalculateRequest request = new("1234", 1000);
+        CalculateTaxRequest taxRequest = new("1234", 1000);
 
-        postalCodeService.Setup(s => s.GetCalculatorTypeByPostalCodeAsync(request.PostalCode, CancellationToken.None))
+        postalCodeService.Setup(s => s.GetCalculatorTypeByPostalCodeAsync(taxRequest.PostalCode, CancellationToken.None))
             .ReturnsAsync(calculatorType);
 
         // Arrange
         CalculatorController controller = CreateCalculatorController(
             postalCodeService: postalCodeService);
 
-        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(taxRequest, CancellationToken.None);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -63,9 +63,9 @@ public class CalculatorControllerTests
 
         Mock<ITaxCalculationService> taxCalculationService = new();
 
-        CalculateRequest request = new("1234", 1000);
+        CalculateTaxRequest taxRequest = new("1234", 1000);
 
-        CalculateTaxDto calculateTaxDto = new(request.PostalCode, calculatorType, request.Income);
+        CalculateTaxDto calculateTaxDto = new(taxRequest.PostalCode, calculatorType, taxRequest.Income);
 
         CalculateTaxResultDto calculateTaxResultDto = new(calculatorType, 10);
 
@@ -77,7 +77,7 @@ public class CalculatorControllerTests
             taxCalculationService: taxCalculationService);
 
 
-        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(taxRequest, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -94,9 +94,9 @@ public class CalculatorControllerTests
 
         Mock<ITaxCalculationService> taxCalculationService = new();
 
-        CalculateRequest request = new("1234", 1000);
+        CalculateTaxRequest taxRequest = new("1234", 1000);
 
-        CalculateTaxDto calculateTaxDto = new(request.PostalCode, calculatorType, request.Income);
+        CalculateTaxDto calculateTaxDto = new(taxRequest.PostalCode, calculatorType, taxRequest.Income);
 
         taxCalculationService.Setup(s => s.CalculateTaxAsync(calculateTaxDto, CancellationToken.None))
             .ThrowsAsync(new DomainException("An error occurred"));
@@ -105,7 +105,7 @@ public class CalculatorControllerTests
             postalCodeService: postalCodeService,
             taxCalculationService: taxCalculationService);
 
-        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(taxRequest, CancellationToken.None);
 
         Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(500, (result.Result as ObjectResult)?.StatusCode);

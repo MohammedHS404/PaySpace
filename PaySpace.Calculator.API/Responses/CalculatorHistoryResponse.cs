@@ -13,6 +13,19 @@ public sealed record CalculatorHistoryResponse
     public decimal Tax { get; init; }
 
     public required string Calculator { get; init; }
+    
+    public CalculatorHistoryResponse()
+    {
+    }
+
+    public CalculatorHistoryResponse(string postalCode, DateTime timestamp, decimal income, decimal tax, string calculator)
+    {
+        PostalCode = postalCode;
+        Timestamp = timestamp;
+        Income = income;
+        Tax = tax;
+        Calculator = calculator;
+    }
 
     public static CalculatorHistoryResponse FromEntity(CalculatorHistory history)
     {

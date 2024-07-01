@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PaySpace.Calculator.Web.Services.Abstractions;
-using PaySpace.Calculator.Web.Services.Models;
+using PaySpace.Calculator.Web.Services.Dtos;
+using PaySpace.Calculator.Web.Services.Services;
 
-namespace PaySpace.Calculator.Web.Services;
+namespace PaySpace.Calculator.Web.Services.Configuration;
 
 public static class ServiceCollectionExtensions
 {
@@ -14,12 +15,12 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(calculatorSettingsOptions));
         }
         
-        services.AddScoped<ICalculatorHttpService, CalculatorHttpService>(
+        services.AddScoped<ICalculatorIntegrationService, CalculatorIntegrationService>(
             sp=>
             {
                 HttpClient httpClient = sp.GetRequiredService<HttpClient>();
-                ILogger<CalculatorHttpService> logger = sp.GetRequiredService<ILogger<CalculatorHttpService>>();
-                return new CalculatorHttpService(httpClient, calculatorSettingsOptions, logger);
+                ILogger<CalculatorIntegrationService> logger = sp.GetRequiredService<ILogger<CalculatorIntegrationService>>();
+                return new CalculatorIntegrationService(httpClient, calculatorSettingsOptions, logger);
             });
     }
 }

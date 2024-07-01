@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PaySpace.Calculator.Web.Models;
+namespace PaySpace.Calculator.Web.ViewModels;
 
-public sealed class CalculateRequestViewModel
+public sealed class CalculatorViewModel
 {
     [Required]
     public string? PostalCode { get; set; }

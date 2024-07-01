@@ -1,5 +1,6 @@
 using PaySpace.Calculator.Web.Services;
-using PaySpace.Calculator.Web.Services.Models;
+using PaySpace.Calculator.Web.Services.Configuration;
+using PaySpace.Calculator.Web.Services.Dtos;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 

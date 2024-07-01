@@ -1,7 +1,7 @@
 using PaySpace.Calculator.Business.Abstractions;
 using PaySpace.Calculator.Business.Abstractions.Calculators;
+using PaySpace.Calculator.Business.Dtos;
 using PaySpace.Calculator.Business.Exceptions;
-using PaySpace.Calculator.Business.Models;
 using PaySpace.Calculator.Data.Abstractions;
 using PaySpace.Calculator.Data.Models;
 

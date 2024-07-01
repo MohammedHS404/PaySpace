@@ -1,8 +1,0 @@
-namespace PaySpace.Calculator.Web.Models;
-
-public sealed class CalculatorViewModel
-{
-    public string PostalCode { get; set; }
-
-    public decimal Income { get; set; }
-}
