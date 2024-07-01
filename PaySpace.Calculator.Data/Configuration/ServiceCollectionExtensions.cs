@@ -7,6 +7,7 @@ using PaySpace.Calculator.Data.Cache;
 using PaySpace.Calculator.Data.Repositories;
 using PaySpace.Calculator.Data.Repositories.CalculatorSettings;
 using PaySpace.Calculator.Data.Repositories.History;
+using PaySpace.Calculator.Data.Repositories.PostalCode;
 
 namespace PaySpace.Calculator.Data.Configuration;
 
@@ -30,7 +31,16 @@ public static class ServiceCollectionExtensions
                 opt.GetRequiredService<ICacheKeyBuilder>()
             ));
 
-        services.AddScoped<IHistoryRepository, HistoryRepository>();
+        services.AddScoped<ICalculatorHistoryRepository, CalculatorHistoryRepository>();
+
+        services.AddScoped<PostalCodeRepository>();
+
+        services.AddScoped<IPostalCodeRepository, PostalCodeRepositoryCacheProxy>(
+            opt => new PostalCodeRepositoryCacheProxy(
+                opt.GetRequiredService<PostalCodeRepository>(),
+                opt.GetRequiredService<ICacheService>(),
+                opt.GetRequiredService<ICacheKeyBuilder>()
+            ));
     }
 
     public static void InitializeDatabase(this IApplicationBuilder app)

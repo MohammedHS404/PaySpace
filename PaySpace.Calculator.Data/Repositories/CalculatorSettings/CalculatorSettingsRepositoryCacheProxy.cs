@@ -19,16 +19,16 @@ internal sealed class CalculatorSettingsRepositoryCacheProxy : ICalculatorSettin
         _cacheKeyBuilder = cacheKeyBuilder;
 
     }
-    
+
     public async Task<List<CalculatorSetting>> GetSettingsAsync(CalculatorType calculatorType, CancellationToken cancellationToken)
     {
         async Task<List<CalculatorSetting>> Factory()
         {
             return await _repository.GetSettingsAsync(calculatorType, cancellationToken);
         }
-        
+
         string key = _cacheKeyBuilder.Add(nameof(CalculatorSetting)).Add(calculatorType.ToString()).Build();
 
-        return await _cacheService.GetOrCreateAsync(key, Factory);
+        return await _cacheService.GetOrCreateAsync(key, Factory, TimeSpan.FromDays(1));
     }
 }

@@ -10,13 +10,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{11
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.Web.Services", "PaySpace.Calculator.Web.Services\PaySpace.Calculator.Web.Services.csproj", "{6502E531-BBA2-46C5-9F68-AD7FEBEC7AB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.Services", "PaySpace.Calculator.Services\PaySpace.Calculator.Services.csproj", "{E3945538-24CD-4A53-9A1A-70B087F42E3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.Business", "PaySpace.Calculator.Business\PaySpace.Calculator.Business.csproj", "{E3945538-24CD-4A53-9A1A-70B087F42E3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.Services.Tests", "PaySpace.Calculator.Services.Tests\PaySpace.Calculator.Services.Tests.csproj", "{9022D637-762E-464B-995C-9E4DDF78CAAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.Business.Tests", "PaySpace.Calculator.Business.Tests\PaySpace.Calculator.Business.Tests.csproj", "{9022D637-762E-464B-995C-9E4DDF78CAAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.Web", "PaySpace.Calculator.Web\PaySpace.Calculator.Web.csproj", "{F9826B33-2CB9-4B8C-B307-FF8328F02558}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.API.Tests", "PaySpace.Calculator.API.Tests\PaySpace.Calculator.API.Tests.csproj", "{543A71A1-16C2-48D5-BBA4-3E679150A52F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaySpace.Calculator.Data.Tests", "PaySpace.Calculator.Data.Tests\PaySpace.Calculator.Data.Tests.csproj", "{E893EE7E-61B4-47A3-9CB0-BBDBB0A0450F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{543A71A1-16C2-48D5-BBA4-3E679150A52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{543A71A1-16C2-48D5-BBA4-3E679150A52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{543A71A1-16C2-48D5-BBA4-3E679150A52F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E893EE7E-61B4-47A3-9CB0-BBDBB0A0450F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E893EE7E-61B4-47A3-9CB0-BBDBB0A0450F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E893EE7E-61B4-47A3-9CB0-BBDBB0A0450F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E893EE7E-61B4-47A3-9CB0-BBDBB0A0450F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9D42491E-B527-44B1-A35D-C4A6F7DBF3BA} = {91EF5A17-5D02-4C98-9C30-8ECCF90401B3}
@@ -61,5 +67,6 @@ Global
 		{9022D637-762E-464B-995C-9E4DDF78CAAE} = {91EF5A17-5D02-4C98-9C30-8ECCF90401B3}
 		{F9826B33-2CB9-4B8C-B307-FF8328F02558} = {11F8B99C-EB96-4510-92F2-B6D1A74A65AE}
 		{543A71A1-16C2-48D5-BBA4-3E679150A52F} = {91EF5A17-5D02-4C98-9C30-8ECCF90401B3}
+		{E893EE7E-61B4-47A3-9CB0-BBDBB0A0450F} = {91EF5A17-5D02-4C98-9C30-8ECCF90401B3}
 	EndGlobalSection
 EndGlobal

@@ -1,13 +1,12 @@
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PaySpace.Calculator.API.Controllers;
 using PaySpace.Calculator.API.Requests;
+using PaySpace.Calculator.Business.Abstractions;
+using PaySpace.Calculator.Business.Exceptions;
+using PaySpace.Calculator.Business.Models;
 using PaySpace.Calculator.Data.Models;
-using PaySpace.Calculator.Services.Abstractions;
-using PaySpace.Calculator.Services.Exceptions;
-using PaySpace.Calculator.Services.Models;
 
 namespace PaySpace.Calculator.API.Tests;
 
@@ -24,7 +23,7 @@ public class CalculatorControllerTests
         CalculateRequest request = new("1234", -1);
 
         // Act
-        ActionResult<CalculateResult> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -39,14 +38,14 @@ public class CalculatorControllerTests
 
         CalculateRequest request = new("1234", 1000);
 
-        postalCodeService.Setup(s => s.CalculatorTypeAsync(request.PostalCode, CancellationToken.None))
+        postalCodeService.Setup(s => s.GetCalculatorTypeByPostalCodeAsync(request.PostalCode, CancellationToken.None))
             .ReturnsAsync(calculatorType);
 
         // Arrange
         CalculatorController controller = CreateCalculatorController(
             postalCodeService: postalCodeService);
 
-        ActionResult<CalculateResult> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -59,7 +58,7 @@ public class CalculatorControllerTests
 
         CalculatorType calculatorType = CalculatorType.FlatValue;
 
-        postalCodeService.Setup(s => s.CalculatorTypeAsync(It.IsAny<string>(), CancellationToken.None))
+        postalCodeService.Setup(s => s.GetCalculatorTypeByPostalCodeAsync(It.IsAny<string>(), CancellationToken.None))
             .ReturnsAsync(calculatorType);
 
         Mock<ITaxCalculationService> taxCalculationService = new();
@@ -78,7 +77,7 @@ public class CalculatorControllerTests
             taxCalculationService: taxCalculationService);
 
 
-        ActionResult<CalculateResult> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -90,7 +89,7 @@ public class CalculatorControllerTests
 
         CalculatorType calculatorType = CalculatorType.FlatValue;
 
-        postalCodeService.Setup(s => s.CalculatorTypeAsync(It.IsAny<string>(), CancellationToken.None))
+        postalCodeService.Setup(s => s.GetCalculatorTypeByPostalCodeAsync(It.IsAny<string>(), CancellationToken.None))
             .ReturnsAsync(calculatorType);
 
         Mock<ITaxCalculationService> taxCalculationService = new();
@@ -106,7 +105,7 @@ public class CalculatorControllerTests
             postalCodeService: postalCodeService,
             taxCalculationService: taxCalculationService);
 
-        ActionResult<CalculateResult> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(500, (result.Result as ObjectResult)?.StatusCode);
@@ -114,13 +113,11 @@ public class CalculatorControllerTests
 
     private static CalculatorController CreateCalculatorController(
         Mock<IHistoryService>? historyService = null,
-        Mock<IMapper>? mapper = null,
         Mock<ITaxCalculationService>? taxCalculationService = null,
         Mock<IPostalCodeService>? postalCodeService = null
     )
     {
         historyService ??= new();
-        mapper ??= new();
         taxCalculationService ??= new();
         postalCodeService ??= new();
 
@@ -129,7 +126,6 @@ public class CalculatorControllerTests
         CalculatorController? controller = new(
             logger,
             historyService.Object,
-            mapper.Object,
             taxCalculationService.Object,
             postalCodeService.Object);
 

@@ -1,10 +1,10 @@
-﻿using MapsterMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PaySpace.Calculator.API.Requests;
+using PaySpace.Calculator.API.Responses;
 using PaySpace.Calculator.Data.Models;
-using PaySpace.Calculator.Services.Abstractions;
-using PaySpace.Calculator.Services.Exceptions;
-using PaySpace.Calculator.Services.Models;
+using PaySpace.Calculator.Business.Abstractions;
+using PaySpace.Calculator.Business.Exceptions;
+using PaySpace.Calculator.Business.Models;
 
 namespace PaySpace.Calculator.API.Controllers;
 
@@ -14,33 +14,30 @@ public sealed class CalculatorController : ControllerBase
 {
     private readonly ILogger<CalculatorController> _logger;
     private readonly IHistoryService _historyService;
-    private readonly IMapper _mapper;
     private readonly ITaxCalculationService _taxCalculationService;
     private readonly IPostalCodeService _postalCodeService;
 
     public CalculatorController(
         ILogger<CalculatorController> logger,
         IHistoryService historyService,
-        IMapper mapper,
         ITaxCalculationService taxCalculationService,
         IPostalCodeService postalCodeService)
     {
         _logger = logger;
         _historyService = historyService;
-        _mapper = mapper;
         _taxCalculationService = taxCalculationService;
         _postalCodeService = postalCodeService;
     }
 
     [HttpPost("calculate-tax")]
-    public async Task<ActionResult<CalculateResult>> CalculateAsync([FromBody] CalculateRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<CalculateResultDto>> CalculateAsync([FromBody] CalculateRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        CalculatorType? calculatorType = await _postalCodeService.CalculatorTypeAsync(request.PostalCode, cancellationToken);
+        CalculatorType? calculatorType = await _postalCodeService.GetCalculatorTypeByPostalCodeAsync(request.PostalCode, cancellationToken);
 
         if (!calculatorType.HasValue)
         {
@@ -72,6 +69,8 @@ public sealed class CalculatorController : ControllerBase
         
         List<CalculatorHistory> history = await _historyService.GetHistoryAsync(request.ToPaginationDto(), cancellationToken);
 
-        return Ok(_mapper.Map<List<CalculatorHistoryDto>>(history));
+        List<CalculatorHistoryResponse> historyDtos = history.Select(CalculatorHistoryResponse.FromEntity).ToList();
+        
+        return Ok(historyDtos);
     }
 }
