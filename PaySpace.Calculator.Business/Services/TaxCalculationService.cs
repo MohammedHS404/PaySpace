@@ -24,25 +24,25 @@ public class TaxCalculationService : ITaxCalculationService
 
     }
 
-    public async Task<CalculateResultDto> CalculateTaxAsync(
+    public async Task<CalculateTaxResultDto> CalculateTaxAsync(
         CalculateTaxDto calculateTaxDto,
         CancellationToken cancellationToken)
     {
-        List<CalculatorSetting> calculatorSettings = await _calculatorSettingsRepository.GetSettingsAsync(calculateTaxDto.CalculatorType, cancellationToken);
+        List<CalculatorSetting> calculatorSettings = await _calculatorSettingsRepository.GetSettingsAsync(calculateTaxDto.Calculator, cancellationToken);
 
         if (!calculatorSettings.Any())
         {
             throw new DomainException("Couldn't find an appropriate calculation for the provided postal code");
         }
 
-        ICalculator calculator = _calculatorFactory.CreateCalculator(calculateTaxDto.CalculatorType);
+        ICalculator calculator = _calculatorFactory.CreateCalculator(calculateTaxDto.Calculator);
 
         decimal tax = calculator.Calculate(calculateTaxDto.Income, calculatorSettings);
 
-        CalculatorHistory history = CalculatorHistory.Create(calculateTaxDto.PostalCode, calculateTaxDto.Income, tax, calculateTaxDto.CalculatorType);
+        CalculatorHistory history = CalculatorHistory.Create(calculateTaxDto.PostalCode, calculateTaxDto.Income, tax, calculateTaxDto.Calculator);
 
         await _historyService.AddAndSaveAsync(history, cancellationToken);
 
-        return new(calculateTaxDto.CalculatorType, tax);
+        return new(calculateTaxDto.Calculator, tax);
     }
 }

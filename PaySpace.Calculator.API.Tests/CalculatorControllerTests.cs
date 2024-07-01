@@ -23,7 +23,7 @@ public class CalculatorControllerTests
         CalculateRequest request = new("1234", -1);
 
         // Act
-        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -45,7 +45,7 @@ public class CalculatorControllerTests
         CalculatorController controller = CreateCalculatorController(
             postalCodeService: postalCodeService);
 
-        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -67,17 +67,17 @@ public class CalculatorControllerTests
 
         CalculateTaxDto calculateTaxDto = new(request.PostalCode, calculatorType, request.Income);
 
-        CalculateResultDto calculateResultDto = new(calculatorType, 10);
+        CalculateTaxResultDto calculateTaxResultDto = new(calculatorType, 10);
 
         taxCalculationService.Setup(s => s.CalculateTaxAsync(calculateTaxDto, CancellationToken.None))
-            .ReturnsAsync(calculateResultDto);
+            .ReturnsAsync(calculateTaxResultDto);
 
         CalculatorController controller = CreateCalculatorController(
             postalCodeService: postalCodeService,
             taxCalculationService: taxCalculationService);
 
 
-        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -105,7 +105,7 @@ public class CalculatorControllerTests
             postalCodeService: postalCodeService,
             taxCalculationService: taxCalculationService);
 
-        ActionResult<CalculateResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
+        ActionResult<CalculateTaxResultDto> result = await controller.CalculateAsync(request, CancellationToken.None);
 
         Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(500, (result.Result as ObjectResult)?.StatusCode);

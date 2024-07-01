@@ -1,10 +1,11 @@
 using PaySpace.Calculator.Web.Services;
+using PaySpace.Calculator.Web.Services.Models;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddCalculatorHttpServices();
-
+builder.Services.AddCalculatorHttpServices(builder.Configuration.GetSection("CalculatorSettings").Get<CalculatorSettingsOptionsDto>());
+builder.Services.AddHttpClient();
 WebApplication? app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

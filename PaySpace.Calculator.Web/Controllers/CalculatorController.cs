@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using PaySpace.Calculator.Web.Models;
 using PaySpace.Calculator.Web.Services.Abstractions;
 using PaySpace.Calculator.Web.Services.Models;
@@ -13,19 +12,10 @@ public class CalculatorController : Controller
     {
         _calculatorHttpService = calculatorHttpService;
     }
+
     public IActionResult Index()
     {
-        var vm = GetCalculatorViewModelAsync();
-
-        return View(vm);
-    }
-
-    public async Task<IActionResult> History()
-    {
-        return View(new CalculatorHistoryViewModel
-        {
-            CalculatorHistory = await _calculatorHttpService.GetHistoryAsync()
-        });
+        return View();
     }
 
     [HttpPost]
@@ -42,7 +32,7 @@ public class CalculatorController : Controller
                     Income = request.Income
                 });
 
-                return RedirectToAction(nameof(History));
+                return RedirectToAction(nameof(History), new PaginationDto());
             }
             catch (Exception e)
             {
@@ -50,20 +40,29 @@ public class CalculatorController : Controller
             }
         }
 
-        CalculatorViewModel? vm = await GetCalculatorViewModelAsync(request);
-
-        return View(vm);
+        return View();
     }
 
-    private async Task<CalculatorViewModel> GetCalculatorViewModelAsync(CalculateRequestViewModel? request = null)
+    public async Task<IActionResult> History(
+        [FromQuery] PaginationDto pagination,
+        CancellationToken cancellationToken = default)
     {
-        var postalCodes = await _calculatorHttpService.GetPostalCodesAsync();
-
-        return new()
+        List<CalculatorHistory> calculatorHistories = await _calculatorHttpService.GetHistoryAsync(new PaginationDto()
         {
-            PostalCodes = new SelectList(postalCodes),
-            Income = request.Income,
-            PostalCode = request.PostalCode ?? string.Empty
-        };
+            PageNumber = pagination.PageNumber,
+            PageSize = pagination.PageSize
+        }, cancellationToken);
+
+        return View(new CalculatorHistoryViewModel
+        {
+            CalculatorHistory = calculatorHistories,
+            Pagination = new()
+            {
+                PageNumber = pagination.PageNumber,
+                PageSize = pagination.PageSize,
+                HasNextPage = calculatorHistories.Count == pagination.PageSize,
+                HasPreviousPage = pagination.PageNumber > 1
+            }
+        });
     }
 }

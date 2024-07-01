@@ -1,5 +1,3 @@
-
-using PaySpace.Calculator.Data;
 using PaySpace.Calculator.Data.Configuration;
 using PaySpace.Calculator.Business.Configuration;
 

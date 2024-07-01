@@ -15,9 +15,15 @@ public class PostalCodeRepository : IPostalCodeRepository
 
     public async Task<CalculatorType?> GetCalculatorTypeByPostalCodeAsync(string postalCode, CancellationToken cancellationToken)
     {
-        return await _context.PostalCodes
+        Models.PostalCode? code= await _context.PostalCodes
             .Where(x => x.Code == postalCode)
-            .Select(x => x.Calculator)
             .FirstOrDefaultAsync(cancellationToken);
+
+        if (code == null)
+        {
+            return null;
+        }
+        
+        return code.Calculator;
     }
 }

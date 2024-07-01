@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PaySpace.Calculator.Data.Abstractions;
 using PaySpace.Calculator.Data.Cache;
-using PaySpace.Calculator.Data.Repositories;
 using PaySpace.Calculator.Data.Repositories.CalculatorSettings;
 using PaySpace.Calculator.Data.Repositories.History;
 using PaySpace.Calculator.Data.Repositories.PostalCode;

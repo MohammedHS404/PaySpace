@@ -2,4 +2,4 @@
 
 namespace PaySpace.Calculator.Business.Models;
 
-public sealed record CalculateResultDto(CalculatorType Calculator, decimal Tax);
+public sealed record CalculateTaxResultDto(CalculatorType Calculator, decimal Tax);

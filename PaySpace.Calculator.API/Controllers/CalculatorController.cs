@@ -30,7 +30,7 @@ public sealed class CalculatorController : ControllerBase
     }
 
     [HttpPost("calculate-tax")]
-    public async Task<ActionResult<CalculateResultDto>> CalculateAsync([FromBody] CalculateRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<CalculateTaxResultDto>> CalculateAsync([FromBody] CalculateRequest request, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -39,7 +39,7 @@ public sealed class CalculatorController : ControllerBase
 
         CalculatorType? calculatorType = await _postalCodeService.GetCalculatorTypeByPostalCodeAsync(request.PostalCode, cancellationToken);
 
-        if (!calculatorType.HasValue)
+        if (calculatorType == null)
         {
             return BadRequest("Couldn't find an appropriate calculation method for the provided postal code");
         }
@@ -48,11 +48,11 @@ public sealed class CalculatorController : ControllerBase
         {
             CalculateTaxDto calculateTaxDto = new(request.PostalCode, calculatorType.Value, request.Income);
 
-            CalculateResultDto result = await _taxCalculationService.CalculateTaxAsync(
+            CalculateTaxResultDto taxResult = await _taxCalculationService.CalculateTaxAsync(
                 calculateTaxDto,
                 cancellationToken);
 
-            return Ok(result);
+            return Ok(new CalculateResultResponse(taxResult));
         }
         catch (DomainException e)
         {

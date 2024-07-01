@@ -19,15 +19,33 @@
     </tr>
     </thead>
     <tbody>
-        @foreach (CalculatorHistory? history in Model.CalculatorHistory)
-        {
-            <tr>
-                <th scope="row">@history.Timestamp</th>
-                <td>@history.PostalCode</td>
-                <td>@history.Income</td>
-                <td>@history.Tax</td>
-                <td>@history.Calculator</td>
-            </tr>
-        }
+    @foreach (CalculatorHistory? history in Model.CalculatorHistory)
+    {
+        <tr>
+            <th scope="row">@history.Timestamp</th>
+            <td>@history.PostalCode</td>
+            <td>@history.Income</td>
+            <td>@history.Tax</td>
+            <td>@history.Calculator</td>
+        </tr>
+    }
     </tbody>
-</table> 
+</table>
+@{
+    string prevDisabled = !Model.Pagination.HasPreviousPage ? "disabled" : "";
+    string nextDisabled = !Model.Pagination.HasNextPage ? "disabled" : "";
+}
+<div class="d-flex justify-content-end">
+    <a asp-page="/History"
+       asp-route-PageSize="@Model.Pagination.PageSize"
+       asp-route-PageNumber="@(Model.Pagination.PageNumber - 1 > 0 ? Model.Pagination.PageNumber - 1 : 1)"
+       class="btn btn-primary @prevDisabled">
+        Previous
+    </a>
+    <a asp-page="/History"
+       asp-route-PageSize="@Model.Pagination.PageSize"
+       asp-route-PageNumber="@(Model.Pagination.PageNumber + 1)"
+       class="btn btn-primary @nextDisabled">
+        Next
+    </a>
+</div>

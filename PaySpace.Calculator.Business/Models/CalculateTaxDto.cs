@@ -4,19 +4,13 @@ namespace PaySpace.Calculator.Business.Models;
 
 public record CalculateTaxDto
 {
-    public CalculateTaxDto(string PostalCode, CalculatorType CalculatorType, decimal Income)
+    public CalculateTaxDto(string postalCode, CalculatorType calculator, decimal income)
     {
-        this.PostalCode = PostalCode;
-        this.CalculatorType = CalculatorType;
-        this.Income = Income;
+        this.PostalCode = postalCode;
+        this.Calculator = calculator;
+        this.Income = income;
     }
     public string PostalCode { get; init; }
-    public CalculatorType CalculatorType { get; init; }
+    public CalculatorType Calculator { get; init; }
     public decimal Income { get; init; }
-    public void Deconstruct(out string PostalCode, out CalculatorType CalculatorType, out decimal Income)
-    {
-        PostalCode = this.PostalCode;
-        CalculatorType = this.CalculatorType;
-        Income = this.Income;
-    }
 }

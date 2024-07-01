@@ -1,11 +1,8 @@
-using Microsoft.EntityFrameworkCore.Migrations;
 using Moq;
 using PaySpace.Calculator.Data.Abstractions;
 using PaySpace.Calculator.Data.Cache;
-using PaySpace.Calculator.Data.Dtos;
 using PaySpace.Calculator.Data.Models;
 using PaySpace.Calculator.Data.Repositories.CalculatorSettings;
-using PaySpace.Calculator.Data.Repositories.History;
 
 namespace PaySpace.Calculator.Data.Tests.Repositories;
 

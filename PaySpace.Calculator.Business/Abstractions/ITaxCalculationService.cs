@@ -4,7 +4,7 @@ namespace PaySpace.Calculator.Business.Abstractions;
 
 public interface ITaxCalculationService
 {
-    Task<CalculateResultDto> CalculateTaxAsync(
+    Task<CalculateTaxResultDto> CalculateTaxAsync(
         CalculateTaxDto calculateTaxDto,
         CancellationToken cancellationToken);
 }
